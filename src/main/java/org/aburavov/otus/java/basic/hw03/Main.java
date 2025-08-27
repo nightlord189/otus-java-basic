@@ -7,7 +7,7 @@ public class Main {
         System.out.println("Hello, this is HW03");
 
         int[][] arr1 = {{1, 2, 3}, {-4, -5, -6}, {-7, -8, 9}};
-        System.out.println("sumOfPositiveElements: " + Arrays.deepToString(arr1) + " = "+sumOfPositiveElements(arr1));
+        System.out.println("sumOfPositiveElements: " + Arrays.deepToString(arr1) + " = " + sumOfPositiveElements(arr1));
 
         printSquare(5);
 
@@ -16,14 +16,14 @@ public class Main {
         System.out.println("array after zeroOut: ");
         printArray(arr2);
 
-        System.out.println("findMax: " + Arrays.deepToString(arr2) + " = "+findMax(arr2));
+        System.out.println("findMax: " + Arrays.deepToString(arr2) + " = " + findMax(arr2));
 
         int column1 = 1;
-        System.out.println("getSumOfColumn: " + Arrays.deepToString(arr2) + ", column "+column1+ " = "+getSumOfColumn(arr2, column1));
+        System.out.println("getSumOfColumn: " + Arrays.deepToString(arr2) + ", column " + column1 + " = " + getSumOfColumn(arr2, column1));
 
         int[][] arr3 = {{1, 2}, {4, 5}, {7, 8}};
         int column2 = 2;
-        System.out.println("getSumOfColumn: " + Arrays.deepToString(arr3) + ", column "+column2+ " = "+getSumOfColumn(arr3, column2));
+        System.out.println("getSumOfColumn: " + Arrays.deepToString(arr3) + ", column " + column2 + " = " + getSumOfColumn(arr3, column2));
     }
 
     static int sumOfPositiveElements(int[][] arr) {
@@ -38,8 +38,8 @@ public class Main {
         return sum;
     }
 
-    static void printSquare (int size) {
-        System.out.println("printSquare: size "+size);
+    static void printSquare(int size) {
+        System.out.println("printSquare: size " + size);
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 System.out.print("* ");
@@ -48,21 +48,22 @@ public class Main {
         }
     }
 
-    static void zeroOutDiagonals (int[][]square) {
+    static void zeroOutDiagonals(int[][] square) {
         // primary diagonal
-        for (int i = 0; i < square.length; i++) {
-            for (int j = 0; j < square[i].length; j++) {
-                if (i == j) {
-                    square[i][j] = 0;
-                }
-            }
+        int i = 0;
+        int j = 0;
+
+        while (i < square.length && j <= square[0].length) {
+            square[i][j] = 0;
+            i++;
+            j++;
         }
 
         // secondary diagonal
-        int i = 0;
-        int j = square[0].length-1;
+        i = 0;
+        j = square[0].length - 1;
 
-        while (i < square.length && j >=0) {
+        while (i < square.length && j >= 0) {
             square[i][j] = 0;
             i++;
             j--;
@@ -81,7 +82,7 @@ public class Main {
         return max;
     }
 
-    static int getSumOfColumn (int[][] arr, int column) {
+    static int getSumOfColumn(int[][] arr, int column) {
         if (column >= arr[0].length) {
             return -1;
         }
@@ -95,7 +96,7 @@ public class Main {
     static void printArray(int[][] arr) {
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr[i].length; j++) {
-                System.out.print(arr[i][j]+" ");
+                System.out.print(arr[i][j] + " ");
             }
             System.out.print('\n');
         }
