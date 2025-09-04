@@ -29,7 +29,7 @@ public class Main {
             }
         }
 
-        Box box = new Box(10, 15, 5, "green", false, null);
+        Box box = new Box(10, 15, 5, "green");
         box.printInfo();
         box.setColor("black");
         box.open();

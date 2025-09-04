@@ -34,13 +34,13 @@ public class Box {
         return isOpened;
     }
 
-    public Box (int width, int length, int height, String color, Boolean isOpened, String content) {
+    public Box (int width, int length, int height, String color) {
         this.width = width;
         this.length = length;
         this.height = height;
         this.color = color;
-        this.content = content;
-        this.isOpened = isOpened;
+        this.content = null;
+        this.isOpened = false;
     }
 
     public void printInfo () {
@@ -50,14 +50,16 @@ public class Box {
 
     public void open () {
         if (this.isOpened) {
-            throw new IllegalStateException("Box is already opened");
+            System.out.println("Box is already opened");
+            return;
         }
         this.isOpened = true;
     }
 
     public void close () {
         if (!this.isOpened) {
-            throw new IllegalStateException("Box is already closed");
+            System.out.println("Box is already closed");
+            return;
         }
         this.isOpened = false;
     }
@@ -67,7 +69,8 @@ public class Box {
             throw new IllegalStateException("Box is closed");
         }
         if (this.content != null) {
-            throw new IllegalStateException("Box already has content inside");
+            System.out.println("Box already has content inside");
+            return;
         }
         this.content = content;
     }
@@ -77,7 +80,8 @@ public class Box {
             throw new IllegalStateException("Box is closed");
         }
         if (this.content == null) {
-            throw new IllegalStateException("Box doesn't have content inside");
+            System.out.println("Box doesn't have content inside");
+            return;
         }
         this.content = null;
     }
