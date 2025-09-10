@@ -45,6 +45,10 @@ public abstract class Animal {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + " " + name + ", runSpeed: " + runSpeed + ", swimSpeed: " + swimSpeed + ", stamina: " + stamina;
+        return getName() + ", runSpeed: " + runSpeed + ", swimSpeed: " + swimSpeed + ", stamina: " + stamina;
+    }
+
+    public String getName() {
+        return this.getClass().getSimpleName() + " " + name;
     }
 }
