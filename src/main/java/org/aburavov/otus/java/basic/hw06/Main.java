@@ -18,7 +18,12 @@ public class Main {
         System.out.println("Feeding...");
 
         for (int i = 0; i < cats.length; i++) {
-            cats[i].eat(plate);
+           if (!cats[i].eat(plate)) {
+               System.out.println("There is no food in the plate, increasing food...");
+               plate.increaseFood(20);
+               plate.info();
+               cats[i].eat(plate);
+           }
         }
 
         plate.info();

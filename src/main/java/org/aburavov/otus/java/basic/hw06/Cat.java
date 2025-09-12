@@ -10,12 +10,14 @@ public class Cat {
         this.appetite = appetite;
     }
 
-    public void eat(Plate plate) {
+    public boolean eat(Plate plate) {
         if (plate.decreaseFood(appetite)) {
             this.isHungry = false;
             System.out.println(name + " ate");
+            return true;
         } else {
             System.out.println(name + " not enough food to eat :(");
+            return false;
         }
     }
 

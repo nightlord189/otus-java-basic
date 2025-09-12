@@ -13,6 +13,7 @@ public class Plate {
         this.currentSize += amount;
         if (currentSize > maxSize) {
             currentSize = maxSize;
+            System.out.println("Increasing food in plate by "+amount+", but there is more food than maximum: "+currentSize + ", leaving only "+maxSize);
         }
     }
 
@@ -31,6 +32,6 @@ public class Plate {
 
     @Override
     public String toString() {
-        return "maxSize: " + maxSize + ", currentSize: " + currentSize;
+        return "Plate: maxSize: " + maxSize + ", currentSize: " + currentSize;
     }
 }
