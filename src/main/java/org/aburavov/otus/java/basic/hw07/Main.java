@@ -11,12 +11,12 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hello, this is HW07");
 
-        var car = new Car(10, 1);
-        var offroader = new Offroader(10, 2);
-        var horse = new Horse(20, 2);
-        var bike = new Bike(5);
+        Car car = new Car(10, 1);
+        Offroader offroader = new Offroader(10, 2);
+        Horse horse = new Horse(20, 2);
+        Bike bike = new Bike(5);
 
-        var human = new Human("Alex", 10, 1, null);
+        Human human = new Human("Alex", 10, 1, null);
         human.sitOnTransport(car);
 
         human.move(Surface.SWAMP, 10);

@@ -1,10 +1,9 @@
 package org.aburavov.otus.java.basic.hw07.internal.transport;
 
-import org.aburavov.otus.java.basic.hw07.internal.Entity;
-import org.aburavov.otus.java.basic.hw07.internal.IMovable;
+import org.aburavov.otus.java.basic.hw07.internal.Movable;
 import org.aburavov.otus.java.basic.hw07.internal.Surface;
 
-public class Horse extends BaseTransport implements IMovable {
+public class Horse extends BaseTransport implements Movable {
     private int stamina;
     private final int staminaConsumption;
 
@@ -20,15 +19,15 @@ public class Horse extends BaseTransport implements IMovable {
     @Override
     public boolean move(Surface surface, int distance) {
         if (surface == Surface.SWAMP) {
-            System.out.println(getSimpleName()+" cannot move on swamp :(");
+            System.out.println(getSimpleName() + " cannot move on swamp :(");
             return false;
         }
-        var staminaCost = distance * staminaConsumption;
+        int staminaCost = distance * staminaConsumption;
         if (stamina - staminaCost < 0) {
             System.out.println(getSimpleName() + " cannot move because is tired :(");
         }
         stamina -= staminaCost;
-        System.out.println(getSimpleName() +" moved to distance " + distance + " on surface " + surface + " with stamina cost: " + staminaCost);
+        System.out.println(getSimpleName() + " moved to distance " + distance + " on surface " + surface + " with stamina cost: " + staminaCost);
         return true;
     }
 }

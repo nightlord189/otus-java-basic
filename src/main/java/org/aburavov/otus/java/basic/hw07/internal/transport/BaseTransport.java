@@ -12,7 +12,7 @@ public abstract class BaseTransport extends Entity implements ITransport {
         this.driver = driver;
     }
 
-    public void getOff () {
+    public void getOff() {
         this.driver = null;
     }
 }

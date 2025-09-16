@@ -2,7 +2,7 @@ package org.aburavov.otus.java.basic.hw07.internal.transport;
 
 import org.aburavov.otus.java.basic.hw07.internal.*;
 
-public class Bike extends BaseTransport implements IMovable {
+public class Bike extends BaseTransport implements Movable {
     private final int staminaConsumption;
     private Human driver;
 
@@ -18,21 +18,21 @@ public class Bike extends BaseTransport implements IMovable {
     @Override
     public boolean move(Surface surface, int distance) {
         if (surface == Surface.SWAMP) {
-            System.out.println(getSimpleName()+" cannot move on swamp :(");
+            System.out.println(getSimpleName() + " cannot move on swamp :(");
             return false;
         }
         if (driver == null) {
-            System.out.println(getSimpleName()+ " cannot move without a driver :(");
+            System.out.println(getSimpleName() + " cannot move without a driver :(");
         }
 
-        var staminaCost = distance * staminaConsumption;
+        int staminaCost = distance * staminaConsumption;
         if (driver.getStamina() - staminaCost < 0) {
             System.out.println(getSimpleName() + " cannot move: the driver is tired :(");
             return false;
         }
         driver.decreaseStamina(staminaCost);
 
-        System.out.println(getSimpleName() +" moved to distance " + distance + " on surface " + surface + " with stamina cost: " + staminaCost);
+        System.out.println(getSimpleName() + " moved to distance " + distance + " on surface " + surface + " with stamina cost: " + staminaCost);
         return true;
     }
 }
