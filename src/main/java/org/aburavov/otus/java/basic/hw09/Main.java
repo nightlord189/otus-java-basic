@@ -56,9 +56,9 @@ public class Main {
 
     public static int getSumMoreThanFiveOfList(List<Integer> list) {
         int result = 0;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) > 5) {
-                result += list.get(i);
+        for (int val : list) {
+            if (val > 5) {
+                result += val;
             }
         }
         return result;
@@ -91,20 +91,17 @@ public class Main {
     }
 
     private static int getAverageAge(List<Employee> employees) {
-        int sum = 0;
-        for (int i = 0; i < employees.size(); i++) {
-            sum += employees.get(i).getAge();
-        }
+        int sum = employees.stream().mapToInt(x -> x.getAge()).sum();
         return sum / employees.size();
     }
 
     public static Employee getYoungestEmployee(List<Employee> employees) {
         Employee result = null;
         int minAge = Integer.MAX_VALUE;
-        for (int i = 0; i < employees.size(); i++) {
-            if (employees.get(i).getAge() < minAge) {
-                result = employees.get(i);
-                minAge = employees.get(i).getAge();
+        for (Employee val : employees) {
+            if (val.getAge() < minAge) {
+                result = val;
+                minAge = val.getAge();
             }
         }
         return result;
