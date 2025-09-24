@@ -86,7 +86,6 @@ public class Main {
 
     public static boolean isAverageAgeLargerThan(List<Employee> employees, int minAverageAge) {
         int averageAge = getAverageAge(employees);
-        System.out.println("averageAge: " + averageAge);
         return averageAge > minAverageAge;
     }
 
@@ -97,11 +96,13 @@ public class Main {
 
     public static Employee getYoungestEmployee(List<Employee> employees) {
         Employee result = null;
-        int minAge = Integer.MAX_VALUE;
-        for (Employee val : employees) {
-            if (val.getAge() < minAge) {
-                result = val;
-                minAge = val.getAge();
+        if (employees != null) {
+            int minAge = Integer.MAX_VALUE;
+            for (Employee employee : employees) {
+                if (employee.getAge() < minAge) {
+                    result = employee;
+                    minAge = employee.getAge();
+                }
             }
         }
         return result;
