@@ -1,16 +1,15 @@
 package org.aburavov.otus.java.basic.hw10;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class PhoneBook {
     private final Map<String, Set<String>> database = new HashMap<>();
     private final Set<String> phones = new HashSet<>();
 
     public void add(String name, String phone) {
+        database.computeIfAbsent(name, key -> new HashSet<>());
         Set<String> phonesByName = database.get(name);
-        if (phonesByName == null) {
-            phonesByName = new HashSet<>();
-        }
         phonesByName.add(phone);
         database.put(name, phonesByName);
         phones.add(phone);
