@@ -39,7 +39,7 @@ public class Main {
         try (FileOutputStream out = new FileOutputStream(filename, true)) {
             while (true) {
                 String newLine = scanner.nextLine();
-                if (newLine.equals("exit")) {
+                if ("exit".equalsIgnoreCase(newLine)) {
                     break;
                 }
                 byte[] buffer = newLine.getBytes(StandardCharsets.UTF_8);
