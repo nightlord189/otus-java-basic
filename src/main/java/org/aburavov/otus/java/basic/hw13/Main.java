@@ -5,14 +5,14 @@ import org.aburavov.otus.java.basic.hw13.network.Server;
 import org.aburavov.otus.java.basic.hw13.controllers.ServerController;
 
 public class Main {
-    private static final int port = 8091;
+    private static final int PORT = 8091;
 
     public static void main(String[] args) throws Exception {
         System.out.println("Hello, this is HW13");
 
         ServerController serverController = new ServerController();
 
-        Server server = new Server(serverController, port);
+        Server server = new Server(serverController, PORT);
         Thread serverThread = new Thread(() -> {
             try {
                 server.run();
@@ -23,7 +23,7 @@ public class Main {
         serverThread.start();
 
         DemoClient demoClient = new DemoClient();
-        demoClient.Run(port);
+        demoClient.Run(PORT);
 
         server.stop();
         serverThread.join();

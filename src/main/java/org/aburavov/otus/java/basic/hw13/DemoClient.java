@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class DemoClient {
-    private static final String exitCommand = "/exit";
+    private static final String EXIT_COMMAND = "/exit";
 
     private static class ExitRequested extends RuntimeException {
     }
@@ -93,7 +93,7 @@ public class DemoClient {
     private static String readLineOrExit(Scanner sc) {
         if (!sc.hasNextLine()) throw new ExitRequested(); // EOF (Ctrl+D/Ctrl+Z)
         String line = sc.nextLine().trim();
-        if (line.equalsIgnoreCase(exitCommand)) throw new ExitRequested();
+        if (line.equalsIgnoreCase(EXIT_COMMAND)) throw new ExitRequested();
         return line;
     }
 
