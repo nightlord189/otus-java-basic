@@ -31,6 +31,14 @@ public class ClientHandler {
                             sendMsg("/exitok");
                             break;
                         }
+                        if (message.startsWith("/w ")) {
+                            String[] splitted = message.split(" ", 3);
+                            if (splitted.length != 3) {
+                                System.out.println("Не могу распарсить команду: " + message);
+                                continue;
+                            }
+                            server.sendMessageToClient(splitted[1], username, splitted[2]);
+                        }
                     } else {
                         server.broadcastMessage(username + ": " + message);
                     }
