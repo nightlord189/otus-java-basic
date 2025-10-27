@@ -42,4 +42,18 @@ public class Server {
             c.sendMsg(message);
         }
     }
+
+    public void sendMessageToClient(String addressee, String author, String message) {
+        ClientHandler client = clients.stream()
+                .filter(x -> x.getUsername().equals(addressee))
+                .findFirst()
+                .orElse(null);
+        if (client == null) {
+            System.out.println("Не могу отправить личное сообщение клиенту " + addressee + ": такой клиент не подключен");
+            return;
+        }
+        client.sendMsg(author + ": " + message);
+        System.out.println("Отправлено личное сообщение " + addressee + " от " + author);
+    }
+
 }
