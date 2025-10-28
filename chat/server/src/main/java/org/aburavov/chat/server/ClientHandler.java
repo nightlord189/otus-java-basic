@@ -11,7 +11,7 @@ public class ClientHandler {
     private DataInputStream in;
     private DataOutputStream out;
 
-    private String username;
+    private User user;
     private boolean authenticated;
 
     public ClientHandler(Socket socket, Server server) throws IOException {
@@ -24,75 +24,111 @@ public class ClientHandler {
             System.out.println("Клиент подключился " + socket.getPort());
             try {
                 //Цикл аутентификации
-                while (true) {
-                    sendMsg("Перед работой с чатом необходимо выполнить аутентификацию " +
-                            ConsoleColors.GREEN_BOLD + "'/auth login password'" + ConsoleColors.RESET +
-                            " или регистрацию " +
-                            ConsoleColors.GREEN_BOLD + "'/reg login password'" + ConsoleColors.RESET);
-
-                    String message = in.readUTF();
-
-                    if (message.startsWith("/")) {
-                        if (message.startsWith("/exit")) {
-                            sendMsg("/exitok");
-                            break;
-                        }
-                        // /auth login password
-                        if (message.startsWith("/auth ")) {
-                            String[] token = message.split(" ");
-                            if (token.length != 3) {
-                                sendMsg("Неверный формат команды /auth");
-                                continue;
-                            }
-                            if (server.getAuthenticatedProvider()
-                                    .authenticate(this, token[1], token[2])) {
-                                authenticated = true;
-                                sendMsg("Вы подключились с ником: " + username);
-                                break;
-                            }
-                            continue;
-                        }
-                        // /reg login password
-                        if (message.startsWith("/reg ")) {
-                            String[] token = message.split(" ");
-                            if (token.length != 3) {
-                                sendMsg("Неверный формат команды /reg");
-                                continue;
-                            }
-                            if (server.getAuthenticatedProvider()
-                                    .register(this, token[1], token[2])) {
-                                authenticated = true;
-                                sendMsg("Вы подключились с ником: " + username);
-                                break;
-                            }
-                        }
-                    }
-                }
+                handleAuth();
                 //Цикл работы
-                while (authenticated) {
-                    String message = in.readUTF();
-                    if (message.startsWith("/")) {
-                        if (message.startsWith("/exit")) {
-                            sendMsg("/exitok");
-                            break;
-                        }
-                    } else if (message.startsWith("/w ")) {
-                        String[] splitted = message.split(" ", 3);
-                        if (splitted.length != 3) {
-                            System.out.println("Не могу распарсить команду: " + message);
-                            continue;
-                        }
-                        server.sendMessageToClient(splitted[1], username, splitted[2]);
-                    } else {
-                        server.broadcastMessage(username, message);
-                    }
-                }
+                handleAuthenticated();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {
                 disconnect();
             }
         }).start();
+    }
+
+    private void handleAuth() throws IOException {
+        while (true) {
+            sendMsg("Перед работой с чатом необходимо выполнить аутентификацию " +
+                    ConsoleColors.GREEN_BOLD + "'/auth login password'" + ConsoleColors.RESET +
+                    " или регистрацию " +
+                    ConsoleColors.GREEN_BOLD + "'/reg login password'" + ConsoleColors.RESET);
+
+            String message = in.readUTF();
+
+            if (message.startsWith("/")) {
+                if (message.startsWith("/exit")) {
+                    sendMsg("/exitok");
+                    break;
+                }
+                // /auth login password
+                if (message.startsWith("/auth ")) {
+                    String[] token = message.split(" ");
+                    if (token.length != 3) {
+                        sendMsg("Неверный формат команды /auth");
+                        continue;
+                    }
+                    if (server.getAuthenticatedProvider()
+                            .authenticate(this, token[1], token[2])) {
+                        authenticated = true;
+                        sendMsg("Вы подключились с ником: " + user.getLogin() + " и ролью " + user.getRole());
+                        break;
+                    }
+                    continue;
+                }
+                // /reg login password
+                if (message.startsWith("/reg ")) {
+                    String[] token = message.split(" ");
+                    if (token.length != 3) {
+                        sendMsg("Неверный формат команды /reg");
+                        continue;
+                    }
+                    if (server.getAuthenticatedProvider()
+                            .register(this, token[1], token[2])) {
+                        authenticated = true;
+                        sendMsg("Вы подключились с ником: " + user.getLogin() + " и ролью " + user.getRole());
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleAuthenticated() throws IOException {
+        while (authenticated) {
+            String message = in.readUTF();
+            if (message.startsWith("/")) {
+                if (message.startsWith("/exit")) {
+                    sendMsg("/exitok");
+                    break;
+                } else if (message.startsWith("/w ")) {
+                    handlePrivateMessage(message);
+                } else if (message.startsWith("/kick ")) {
+                    handleKick(message);
+                }
+            } else {
+                server.broadcastMessage(user.getLogin(), message);
+            }
+        }
+    }
+
+    private void handleKick(String message) {
+        String[] splitted = message.split(" ", 2);
+        if (splitted.length != 2) {
+            System.out.println("Не могу распарсить команду: " + message);
+            return;
+        }
+        if (user.getRole() != UserRole.ADMIN) {
+            sendMsg("У вас не хватает прав для этой команды");
+            return;
+        }
+        String usernameToKick = splitted[1];
+        if (usernameToKick.equals(user.getLogin())) {
+            sendMsg("Вы не можете кикнуть сами себя");
+            return;
+        }
+        if (server.kickUser(usernameToKick)) {
+            sendMsg("Пользователь " + usernameToKick + " отключен от чата");
+        } else {
+            sendMsg("В чате нет пользователей с ником " + usernameToKick);
+        }
+    }
+
+    private void handlePrivateMessage(String message) {
+        String[] splitted = message.split(" ", 3);
+        if (splitted.length != 3) {
+            System.out.println("Не могу распарсить команду: " + message);
+            return;
+        }
+        server.sendMessageToClient(splitted[1], user.getLogin(), splitted[2]);
     }
 
     public void sendMsg(String message) {
@@ -103,12 +139,16 @@ public class ClientHandler {
         }
     }
 
-    public String getUsername() {
-        return username;
+    public User getUser() {
+        return user;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getUsername() {
+        return user != null ? user.getLogin() : null;
     }
 
     public void disconnect() {

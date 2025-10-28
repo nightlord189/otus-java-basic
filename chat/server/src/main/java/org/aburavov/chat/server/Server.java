@@ -67,6 +67,16 @@ public class Server {
         return false;
     }
 
+    public boolean kickUser(String username) {
+        for (ClientHandler c : clients) {
+            if (c.getUsername().equals(username)) {
+                c.disconnect();
+                return true;
+            }
+        }
+        return false;
+    }
+
     public AuthenticatedProvider getAuthenticatedProvider() {
         return authenticatedProvider;
     }
