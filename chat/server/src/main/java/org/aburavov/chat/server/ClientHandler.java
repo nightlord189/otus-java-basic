@@ -12,35 +12,79 @@ public class ClientHandler {
     private DataOutputStream out;
 
     private String username;
+    private boolean authenticated;
 
     public ClientHandler(Socket socket, Server server) throws IOException {
         this.socket = socket;
         this.server = server;
         this.in = new DataInputStream(socket.getInputStream());
         this.out = new DataOutputStream(socket.getOutputStream());
-        username = "user" + socket.getPort();
 
         new Thread(() -> {
-            System.out.println("Клиент подключился: " + socket.getPort());
-            sendMsg("Вы подключились с ником: " + username);
+            System.out.println("Клиент подключился " + socket.getPort());
             try {
+                //Цикл аутентификации
                 while (true) {
+                    sendMsg("Перед работой с чатом необходимо выполнить аутентификацию " +
+                            ConsoleColors.GREEN_BOLD + "'/auth login password'" + ConsoleColors.RESET +
+                            " или регистрацию " +
+                            ConsoleColors.GREEN_BOLD + "'/reg login password'" + ConsoleColors.RESET);
+
+                    String message = in.readUTF();
+
+                    if (message.startsWith("/")) {
+                        if (message.startsWith("/exit")) {
+                            sendMsg("/exitok");
+                            break;
+                        }
+                        // /auth login password
+                        if (message.startsWith("/auth ")) {
+                            String[] token = message.split(" ");
+                            if (token.length != 3) {
+                                sendMsg("Неверный формат команды /auth");
+                                continue;
+                            }
+                            if (server.getAuthenticatedProvider()
+                                    .authenticate(this, token[1], token[2])) {
+                                authenticated = true;
+                                sendMsg("Вы подключились с ником: " + username);
+                                break;
+                            }
+                            continue;
+                        }
+                        // /reg login password
+                        if (message.startsWith("/reg ")) {
+                            String[] token = message.split(" ");
+                            if (token.length != 3) {
+                                sendMsg("Неверный формат команды /reg");
+                                continue;
+                            }
+                            if (server.getAuthenticatedProvider()
+                                    .register(this, token[1], token[2])) {
+                                authenticated = true;
+                                sendMsg("Вы подключились с ником: " + username);
+                                break;
+                            }
+                        }
+                    }
+                }
+                //Цикл работы
+                while (authenticated) {
                     String message = in.readUTF();
                     if (message.startsWith("/")) {
                         if (message.startsWith("/exit")) {
                             sendMsg("/exitok");
                             break;
                         }
-                        if (message.startsWith("/w ")) {
-                            String[] splitted = message.split(" ", 3);
-                            if (splitted.length != 3) {
-                                System.out.println("Не могу распарсить команду: " + message);
-                                continue;
-                            }
-                            server.sendMessageToClient(splitted[1], username, splitted[2]);
+                    } else if (message.startsWith("/w ")) {
+                        String[] splitted = message.split(" ", 3);
+                        if (splitted.length != 3) {
+                            System.out.println("Не могу распарсить команду: " + message);
+                            continue;
                         }
+                        server.sendMessageToClient(splitted[1], username, splitted[2]);
                     } else {
-                        server.broadcastMessage(username + ": " + message);
+                        server.broadcastMessage(username, message);
                     }
                 }
             } catch (IOException e) {
