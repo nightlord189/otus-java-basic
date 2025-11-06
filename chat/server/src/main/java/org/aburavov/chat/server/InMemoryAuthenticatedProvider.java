@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
-    private List<User> users;
-    private Server server;
+    private final List<User> users;
+    private final Server server;
 
     public InMemoryAuthenticatedProvider(Server server) {
         this.server = server;
