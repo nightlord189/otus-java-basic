@@ -1,5 +1,9 @@
 package org.aburavov.chat.server;
 
+import org.aburavov.chat.server.auth.AuthenticatedProvider;
+import org.aburavov.chat.server.auth.DbAuthenticatedProvider;
+import org.aburavov.chat.server.auth.InMemoryAuthenticatedProvider;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,7 +19,8 @@ public class Server {
     public Server(int port) {
         this.port = port;
         clients = new CopyOnWriteArrayList<>();
-        authenticatedProvider = new InMemoryAuthenticatedProvider(this);
+        authenticatedProvider = new DbAuthenticatedProvider(this);
+        authenticatedProvider.initialize();
     }
 
     public void start() {
