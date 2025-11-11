@@ -34,6 +34,9 @@ public class Box<T extends Fruit> {
     }
 
     public void moveToAnotherBox(Box<T> anotherBox) {
+        if (this == anotherBox) {
+            return;
+        }
         while (!content.isEmpty()) {
             anotherBox.add(this.take());
         }
