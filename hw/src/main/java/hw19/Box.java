@@ -1,9 +1,10 @@
 package hw19;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Box<T extends Fruit> {
-    private final ArrayList<T> content;
+    private final List<T> content;
 
     public Box() {
         content = new ArrayList<>();
