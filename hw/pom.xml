@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.aburavov</groupId>
+    <groupId>org.aburavov.otus.java.basic</groupId>
     <artifactId>hw</artifactId>
 
     <properties>
