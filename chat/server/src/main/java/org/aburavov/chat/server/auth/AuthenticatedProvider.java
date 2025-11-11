@@ -1,4 +1,6 @@
-package org.aburavov.chat.server;
+package org.aburavov.chat.server.auth;
+
+import org.aburavov.chat.server.ClientHandler;
 
 public interface AuthenticatedProvider {
     void initialize();
