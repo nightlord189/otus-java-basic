@@ -1,7 +1,16 @@
 package org.aburavov.otus.java.basic.hw.hw22;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
+
 public class Main {
+    private final static Logger logger = LogManager.getLogger(Main.class.getName());
+
     public static int[] filterArrayAllAfterLastOne(int[] arr) {
+        logger.info("filterArrayAllAfterLastOne: {}", Arrays.toString(arr));
+
         int lastOneIndex = -1;
         for (int i = 0; i < arr.length; i++) {
             if (arr[i] == 1) {
@@ -10,6 +19,7 @@ public class Main {
         }
 
         if (lastOneIndex < 0) {
+            logger.error("filterArrayAllAfterLastOne: array doesn't contain ones");
             throw new RuntimeException("Array doesn't contain ones");
         }
 
@@ -25,6 +35,8 @@ public class Main {
     }
 
     public static boolean containsOnlyOneAndTwo(int[] arr) {
+        logger.info("containsOnlyOneAndTwo: {}", Arrays.toString(arr));
+
         boolean hasOne = false;
         boolean hasTwo = false;
 
