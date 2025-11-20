@@ -19,6 +19,7 @@ class MainTest {
 
         assertArrayEquals(new int[]{2, 2}, filterArrayAllAfterLastOne(new int[]{1, 2, 1, 2, 2}));
         assertArrayEquals(new int[]{3, 5, 7}, filterArrayAllAfterLastOne(new int[]{1, 3, 5, 7}));
+        assertArrayEquals(new int[]{}, filterArrayAllAfterLastOne(new int[]{1, 2, 1}));
     }
 
     @ParameterizedTest
