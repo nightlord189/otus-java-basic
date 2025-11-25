@@ -46,7 +46,8 @@ public class Main {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println("Error reading file: " + e.getMessage());
+            return 0;
         }
         return result;
     }
