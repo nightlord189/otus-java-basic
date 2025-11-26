@@ -20,8 +20,16 @@ public class ItemsStorage {
         return Collections.unmodifiableList(items);
     }
 
+    public static Item getItem(Long id) {
+        return items.stream().filter(item -> item.getId().equals(id)).findFirst().orElse(null);
+    }
+
     public static void createItem(Item item) {
         item.setId(items.stream().mapToLong(Item::getId).max().orElse(0) + 1);
         items.add(item);
+    }
+
+    public static void deleteItem(Long id) {
+        items.removeIf(item -> item.getId().equals(id));
     }
 }
