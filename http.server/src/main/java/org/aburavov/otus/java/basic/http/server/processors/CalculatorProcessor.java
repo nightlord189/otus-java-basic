@@ -1,6 +1,7 @@
 package org.aburavov.otus.java.basic.http.server.processors;
 
 import org.aburavov.otus.java.basic.http.server.HttpRequest;
+import org.aburavov.otus.java.basic.http.server.Response;
 import org.aburavov.otus.java.basic.http.server.exceptions_handling.BadRequestException;
 
 import java.io.IOException;
@@ -34,11 +35,11 @@ public class CalculatorProcessor implements RequestProcessor {
             throw new BadRequestException("Параметр запроса 'b' имеет некорректный формат");
         }
         String result = a + " + " + b + " = " + (a + b);
-        String response = "" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-Type: text/html\r\n" +
-                "\r\n" +
-                "<html><body><h1>" + result + "</h1></body></html>";
+        String response = new Response(
+                200,
+                "<html><body><h1>" + result + "</h1></body></html>",
+                Response.CONTENT_TYPE_TEXT_HTML).
+                build();
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
 }
