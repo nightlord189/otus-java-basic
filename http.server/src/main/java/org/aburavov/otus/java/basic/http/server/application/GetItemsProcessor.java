@@ -1,8 +1,11 @@
 package org.aburavov.otus.java.basic.http.server.application;
 
 import com.google.gson.Gson;
+import org.aburavov.otus.java.basic.http.server.ContentType;
 import org.aburavov.otus.java.basic.http.server.HttpRequest;
+import org.aburavov.otus.java.basic.http.server.HttpStatus;
 import org.aburavov.otus.java.basic.http.server.Response;
+import org.aburavov.otus.java.basic.http.server.exceptions_handling.HttpException;
 import org.aburavov.otus.java.basic.http.server.processors.RequestProcessor;
 
 import java.io.IOException;
@@ -20,15 +23,13 @@ public class GetItemsProcessor implements RequestProcessor {
         Long id = Util.parseLongOrNull(request.getParameter("id"));
         if (id == null) {
             String itemsJson = gson.toJson(ItemsStorage.getItems());
-            response = new Response(200, itemsJson, Response.CONTENT_TYPE_APPLICATION_JSON).build();
+            response = new Response(HttpStatus.OK, itemsJson, ContentType.APPLICATION_JSON).build();
         } else {
-            Item item = ItemsStorage.getItem(id);
-            if (item == null) {
-                response = new Response(404, null, Response.CONTENT_TYPE_TEXT_HTML).build();
-            } else {
-                String itemJson = gson.toJson(item);
-                response = new Response(200, itemJson, Response.CONTENT_TYPE_APPLICATION_JSON).build();
-            }
+            Item item = ItemsStorage.getItem(id)
+                    .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, "Item not found with id: " + id));
+            
+            String itemJson = gson.toJson(item);
+            response = new Response(HttpStatus.OK, itemJson, ContentType.APPLICATION_JSON).build();
         }
 
         output.write(response.getBytes(StandardCharsets.UTF_8));

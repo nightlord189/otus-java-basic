@@ -1,8 +1,11 @@
 package org.aburavov.otus.java.basic.http.server.application;
 
 import com.google.gson.Gson;
+import org.aburavov.otus.java.basic.http.server.ContentType;
 import org.aburavov.otus.java.basic.http.server.HttpRequest;
+import org.aburavov.otus.java.basic.http.server.HttpStatus;
 import org.aburavov.otus.java.basic.http.server.Response;
+import org.aburavov.otus.java.basic.http.server.exceptions_handling.HttpException;
 import org.aburavov.otus.java.basic.http.server.processors.RequestProcessor;
 
 import java.io.IOException;
@@ -15,14 +18,12 @@ public class DeleteItemsProcessor implements RequestProcessor {
         // DELETE /api/v1/items?id=10
         Long id = Util.parseLongOrNull(request.getParameter("id"));
         if (id == null) {
-            String response = new Response(400, "invalid id", Response.CONTENT_TYPE_TEXT_HTML).build();
-            output.write(response.getBytes(StandardCharsets.UTF_8));
-            return;
+            throw new HttpException(HttpStatus.BAD_REQUEST, "invalid id");
         }
 
         ItemsStorage.deleteItem(id);
 
-        String response = new Response(204, null, Response.CONTENT_TYPE_TEXT_HTML).build();
+        String response = new Response(HttpStatus.NO_CONTENT, null, ContentType.TEXT_HTML).build();
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
 }

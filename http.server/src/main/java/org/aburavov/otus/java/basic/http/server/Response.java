@@ -6,52 +6,43 @@ import org.apache.logging.log4j.Logger;
 import java.util.Map;
 
 public class Response {
-    private final static Logger logger = LogManager.getLogger(HttpServer.class.getName());
+    private final static Logger logger = LogManager.getLogger(Response.class.getName());
 
-    public static final String CONTENT_TYPE_TEXT_HTML = "text/html";
-    public static final String CONTENT_TYPE_APPLICATION_JSON = "application/json";
-
-    public static final String HEADER_CONTENT_TYPE = "Content-Type";
-
-    public static final Map<Integer, String> STATUS_DESCRIPTIONS = Map.of(
-            200, "OK",
-            201, "Created",
-            204, "No Content",
-            400, "Bad Request",
-            404, "Not Found",
-            500, "Internal Server Error"
-    );
-
-    private final int statusCode;
+    private final HttpStatus status;
     private String body = "";
-    private final Map<String, String> headers;
+    private final Map<HeaderType, String> headers;
 
-    public Response(int statusCode, String body, Map<String, String> headers) {
-        this.statusCode = statusCode;
+    public Response(HttpStatus status, String body, Map<HeaderType, String> headers) {
+        this.status = status;
         this.body = body;
         this.headers = headers;
     }
 
-    public Response(int statusCode, String body, String contentType) {
-        this.statusCode = statusCode;
+    public Response(HttpStatus status, String body, ContentType contentType) {
+        this.status = status;
         this.body = body;
         headers = Map.of(
-                HEADER_CONTENT_TYPE, contentType
+                HeaderType.CONTENT_TYPE, contentType.getValue()
         );
     }
 
-    public Response(int statusCode) {
-        this.statusCode = statusCode;
+    public Response(HttpStatus status) {
+        this.status = status;
         this.headers = Map.of(
-                HEADER_CONTENT_TYPE, CONTENT_TYPE_TEXT_HTML
+                HeaderType.CONTENT_TYPE, ContentType.TEXT_HTML.getValue()
         );
+    }
+
+    public Response addHeader(HeaderType key, String value) {
+        this.headers.put(key, value);
+        return this;
     }
 
     public String build() {
         StringBuilder sb = new StringBuilder();
-        sb.append("HTTP/1.1 " + statusCode + " " + STATUS_DESCRIPTIONS.get(statusCode) + "\r\n");
+        sb.append("HTTP/1.1 " + status.getCode() + " " + status.getDescription() + "\r\n");
         for (Map.Entry entry : headers.entrySet()) {
-            sb.append(entry.getKey() + ": " + entry.getValue() + "\r\n");
+            sb.append(entry.getKey().toString() + ": " + entry.getValue() + "\r\n");
         }
         if (body == null) {
             body = "";

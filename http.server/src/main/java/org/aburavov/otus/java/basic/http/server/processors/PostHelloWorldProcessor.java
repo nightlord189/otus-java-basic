@@ -1,6 +1,8 @@
 package org.aburavov.otus.java.basic.http.server.processors;
 
+import org.aburavov.otus.java.basic.http.server.ContentType;
 import org.aburavov.otus.java.basic.http.server.HttpRequest;
+import org.aburavov.otus.java.basic.http.server.HttpStatus;
 import org.aburavov.otus.java.basic.http.server.Response;
 
 import java.io.IOException;
@@ -11,9 +13,9 @@ public class PostHelloWorldProcessor implements RequestProcessor {
     @Override
     public void execute(HttpRequest request, OutputStream output) throws IOException {
         String response = new Response(
-                200,
+                HttpStatus.OK,
                 "<html><body><h1>POST Hello World!</h1></body></html>",
-                Response.CONTENT_TYPE_TEXT_HTML).
+                ContentType.TEXT_HTML).
                 build();
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }

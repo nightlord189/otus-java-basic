@@ -1,8 +1,10 @@
 package org.aburavov.otus.java.basic.http.server.processors;
 
+import org.aburavov.otus.java.basic.http.server.ContentType;
 import org.aburavov.otus.java.basic.http.server.HttpRequest;
+import org.aburavov.otus.java.basic.http.server.HttpStatus;
 import org.aburavov.otus.java.basic.http.server.Response;
-import org.aburavov.otus.java.basic.http.server.exceptions_handling.BadRequestException;
+import org.aburavov.otus.java.basic.http.server.exceptions_handling.HttpException;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -19,26 +21,26 @@ public class CalculatorProcessor implements RequestProcessor {
         // 500 Internal Server Error
         int a, b;
         if (!request.containsParameter("a")) {
-            throw new BadRequestException("В запросе отсутствует обязательный параметр запроса 'a'");
+            throw new HttpException(HttpStatus.BAD_REQUEST, "В запросе отсутствует обязательный параметр запроса 'a'");
         }
         if (!request.containsParameter("b")) {
-            throw new BadRequestException("В запросе отсутствует обязательный параметр запроса 'b'");
+            throw new HttpException(HttpStatus.BAD_REQUEST, "В запросе отсутствует обязательный параметр запроса 'b'");
         }
         try {
             a = Integer.parseInt(request.getParameter("a"));
         } catch (NumberFormatException e) {
-            throw new BadRequestException("Параметр запроса 'a' имеет некорректный формат");
+            throw new HttpException(HttpStatus.BAD_REQUEST, "Параметр запроса 'a' имеет некорректный формат");
         }
         try {
             b = Integer.parseInt(request.getParameter("b"));
         } catch (NumberFormatException e) {
-            throw new BadRequestException("Параметр запроса 'b' имеет некорректный формат");
+            throw new HttpException(HttpStatus.BAD_REQUEST, "Параметр запроса 'b' имеет некорректный формат");
         }
         String result = a + " + " + b + " = " + (a + b);
         String response = new Response(
-                200,
+                HttpStatus.OK,
                 "<html><body><h1>" + result + "</h1></body></html>",
-                Response.CONTENT_TYPE_TEXT_HTML).
+                ContentType.TEXT_HTML).
                 build();
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }

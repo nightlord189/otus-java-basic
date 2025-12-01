@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
-    private final static Logger logger = LogManager.getLogger(HttpServer.class.getName());
+    private final static Logger logger = LogManager.getLogger(HttpRequest.class.getName());
 
     private String rawRequest;
     private HttpMethod method;

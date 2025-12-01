@@ -1,6 +1,8 @@
 package org.aburavov.otus.java.basic.http.server.processors;
 
+import org.aburavov.otus.java.basic.http.server.HeaderType;
 import org.aburavov.otus.java.basic.http.server.HttpRequest;
+import org.aburavov.otus.java.basic.http.server.HttpStatus;
 import org.aburavov.otus.java.basic.http.server.Response;
 
 import java.io.IOException;
@@ -19,10 +21,10 @@ public class DefaultStaticResourceProcessor implements RequestProcessor {
         Path filePath = Paths.get("static/", filename);
         byte[] fileData = Files.readAllBytes(filePath);
 
-        Map<String, String> headers = Map.of("Content-Length", String.valueOf(fileData.length));
+        String response = new Response(HttpStatus.OK)
+                .addHeader(HeaderType.CONTENT_LENGTH, String.valueOf(fileData.length))
+                .build();
 
-        String response = new Response(200, null, headers).build();
-        
         output.write(response.getBytes(StandardCharsets.UTF_8));
         output.write(fileData);
     }
