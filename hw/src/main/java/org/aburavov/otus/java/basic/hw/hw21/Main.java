@@ -45,6 +45,7 @@ public class Main {
             }
         } catch (InterruptedException e) {
             System.out.println("Interrupted: " + e);
+            Thread.currentThread().interrupt();
         }
     }
 }
