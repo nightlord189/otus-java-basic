@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class ItemsStorage {
     private static List<Item> items;
@@ -20,8 +21,16 @@ public class ItemsStorage {
         return Collections.unmodifiableList(items);
     }
 
+    public static Optional<Item> getItem(Long id) {
+        return items.stream().filter(item -> item.getId().equals(id)).findFirst();
+    }
+
     public static void createItem(Item item) {
         item.setId(items.stream().mapToLong(Item::getId).max().orElse(0) + 1);
         items.add(item);
+    }
+
+    public static void deleteItem(Long id) {
+        items.removeIf(item -> item.getId().equals(id));
     }
 }

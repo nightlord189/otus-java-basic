@@ -1,8 +1,9 @@
 package org.aburavov.otus.java.basic.http.server;
 
 import org.aburavov.otus.java.basic.http.server.application.CreateItemsProcessor;
+import org.aburavov.otus.java.basic.http.server.application.DeleteItemsProcessor;
 import org.aburavov.otus.java.basic.http.server.application.GetItemsProcessor;
-import org.aburavov.otus.java.basic.http.server.exceptions_handling.BadRequestException;
+import org.aburavov.otus.java.basic.http.server.exceptions_handling.HttpException;
 import org.aburavov.otus.java.basic.http.server.processors.*;
 
 import java.io.IOException;
@@ -14,9 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Dispatcher {
-    private Map<String, RequestProcessor> routes;
-    private RequestProcessor defaultNotFoundProcessor;
-    private RequestProcessor defaultStaticResourceProcessor;
+    private final Map<String, RequestProcessor> routes;
+    private final RequestProcessor defaultNotFoundProcessor;
+    private final RequestProcessor defaultStaticResourceProcessor;
 
     public Dispatcher() {
         routes = new HashMap<>();
@@ -25,6 +26,7 @@ public class Dispatcher {
         routes.put("GET /add", new CalculatorProcessor());
         routes.put("GET /shop/api/v1/items", new GetItemsProcessor());
         routes.put("POST /shop/api/v1/items", new CreateItemsProcessor());
+        routes.put("DELETE /shop/api/v1/items", new DeleteItemsProcessor());
         defaultNotFoundProcessor = new DefaultNotFoundProcessor();
         defaultStaticResourceProcessor = new DefaultStaticResourceProcessor();
     }
@@ -40,19 +42,21 @@ public class Dispatcher {
         }
         try {
             routes.get(request.getRoutingKey()).execute(request, output);
-        } catch (BadRequestException e) {
-            String response = "" +
-                    "HTTP/1.1 400 Bad Request\r\n" +
-                    "Content-Type: text/html;charset=utf-8\r\n" +
-                    "\r\n" +
-                    "<html><body><h1>BAD REQUEST: " + e.getMessage() + "</h1></body></html>";
+        } catch (HttpException e) {
+            String response = new Response(
+                    e.getStatus(),
+                    "<html><body><h1>" + e.getStatus() + ": " + e.getMessage() + "</h1></body></html>",
+                    ContentType.TEXT_HTML
+            )
+                    .build();
             output.write(response.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
-            String response = "" +
-                    "HTTP/1.1 500 Internal Server Error\r\n" +
-                    "Content-Type: text/html;charset=utf-8\r\n" +
-                    "\r\n" +
-                    "<html><body><h1>ОЙ</h1></body></html>";
+            String response = new Response(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "<html><body><h1>" + e.getMessage() + "</h1></body></html>",
+                    ContentType.TEXT_HTML
+            )
+                    .build();
             output.write(response.getBytes(StandardCharsets.UTF_8));
         }
     }

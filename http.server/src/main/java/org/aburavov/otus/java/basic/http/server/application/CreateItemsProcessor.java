@@ -1,7 +1,10 @@
 package org.aburavov.otus.java.basic.http.server.application;
 
 import com.google.gson.Gson;
+import org.aburavov.otus.java.basic.http.server.ContentType;
 import org.aburavov.otus.java.basic.http.server.HttpRequest;
+import org.aburavov.otus.java.basic.http.server.HttpStatus;
+import org.aburavov.otus.java.basic.http.server.Response;
 import org.aburavov.otus.java.basic.http.server.processors.RequestProcessor;
 
 import java.io.IOException;
@@ -14,11 +17,7 @@ public class CreateItemsProcessor implements RequestProcessor {
         Gson gson = new Gson();
         Item item = gson.fromJson(request.getBody(), Item.class);
         ItemsStorage.createItem(item);
-        String response = "" +
-                "HTTP/1.1 201 Created\r\n" +
-                "Content-Type: application/json\r\n" +
-                "\r\n" +
-                gson.toJson(item);
+        String response = new Response(HttpStatus.CREATED, gson.toJson(item), ContentType.APPLICATION_JSON).build();
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
 }
